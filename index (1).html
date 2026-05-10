@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Voltresso — Fuel Your Energy</title>
+  <meta name="description" content="The AI espresso guide for serious baristas. Machine-specific brew guides, real-time AI advice, and a complete coffee education." />
+  <meta property="og:title" content="Voltresso — Fuel Your Energy" />
+  <meta property="og:description" content="Your AI barista. Pull perfect espresso, every time." />
+  <meta property="og:image" content="https://tarekn98.github.io/voltresso-website/og-image.jpg" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black:    #05050A;
+      --bg:       #0A0A0F;
+      --card:     #111118;
+      --border:   rgba(26,107,255,0.15);
+      --blue:     #1A6BFF;
+      --blue-mid: #4D9FFF;
+      --blue-lit: #80C0FF;
+      --amber:    #D4860A;
+      --white:    #F0F0F8;
+      --muted:    #6E6E7A;
+      --font-display: 'Bebas Neue', sans-serif;
+      --font-body:    'DM Sans', sans-serif;
+      --font-mono:    'DM Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+      cursor: default;
+    }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.4;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 40px;
+      background: linear-gradient(to bottom, rgba(5,5,10,0.95), transparent);
+      backdrop-filter: blur(12px);
+    }
+
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 28px;
+      letter-spacing: 6px;
+      color: var(--white);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-logo .bolt {
+      width: 32px; height: 32px;
+      background: rgba(26,107,255,0.15);
+      border: 1.5px solid var(--blue);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+      box-shadow: 0 0 16px rgba(26,107,255,0.4);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--white); }
+
+    .nav-cta {
+      background: var(--blue);
+      color: #fff !important;
+      padding: 10px 22px;
+      border-radius: 8px;
+      font-weight: 600 !important;
+      box-shadow: 0 0 20px rgba(26,107,255,0.3);
+      transition: box-shadow 0.2s, transform 0.2s !important;
+    }
+    .nav-cta:hover {
+      box-shadow: 0 0 32px rgba(26,107,255,0.6) !important;
+      transform: translateY(-1px);
+      color: #fff !important;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-bg-glow {
+      position: absolute;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(26,107,255,0.12) 0%, transparent 70%);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .hero-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 4px;
+      color: var(--blue-mid);
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 0.3s;
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(72px, 12vw, 160px);
+      line-height: 0.92;
+      letter-spacing: 4px;
+      color: var(--white);
+      text-shadow: 0 0 80px rgba(26,107,255,0.3);
+      opacity: 0;
+      animation: fadeUp 0.9s ease forwards 0.5s;
+    }
+
+    .hero-title span {
+      color: transparent;
+      -webkit-text-stroke: 1.5px rgba(77,159,255,0.6);
+    }
+
+    .hero-tagline {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      letter-spacing: 6px;
+      color: var(--blue-mid);
+      margin-top: 16px;
+      text-transform: uppercase;
+      opacity: 0;
+      animation: fadeUp 0.9s ease forwards 0.7s;
+    }
+
+    .hero-sub {
+      font-size: 18px;
+      color: var(--muted);
+      max-width: 520px;
+      line-height: 1.7;
+      margin-top: 28px;
+      font-weight: 300;
+      opacity: 0;
+      animation: fadeUp 0.9s ease forwards 0.9s;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      margin-top: 48px;
+      flex-wrap: wrap;
+      justify-content: center;
+      opacity: 0;
+      animation: fadeUp 0.9s ease forwards 1.1s;
+    }
+
+    .btn-primary {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 32px;
+      background: var(--blue);
+      color: #fff;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      box-shadow: 0 4px 30px rgba(26,107,255,0.4);
+      transition: all 0.25s;
+      border: 1px solid transparent;
+    }
+    .btn-primary:hover {
+      box-shadow: 0 4px 48px rgba(26,107,255,0.7);
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 32px;
+      background: transparent;
+      color: var(--white);
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 500;
+      text-decoration: none;
+      border: 1px solid var(--border);
+      transition: all 0.25s;
+    }
+    .btn-secondary:hover {
+      border-color: rgba(26,107,255,0.5);
+      background: rgba(26,107,255,0.05);
+    }
+
+    .coming-soon-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      background: rgba(212,134,10,0.15);
+      border: 1px solid rgba(212,134,10,0.4);
+      border-radius: 20px;
+      font-size: 10px;
+      font-family: var(--font-mono);
+      color: var(--amber);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-left: 4px;
+    }
+
+    /* ── SCROLL JOURNEY ── */
+    .journey {
+      position: relative;
+      background: var(--black);
+    }
+
+    .journey-sticky {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .journey-scroll-container {
+      height: 700vh;
+      position: relative;
+    }
+
+    .journey-visual {
+      position: relative;
+      width: 340px;
+      height: 340px;
+      flex-shrink: 0;
+    }
+
+    .journey-content {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 80px;
+      padding: 0 60px;
+    }
+
+    .journey-text {
+      max-width: 400px;
+      flex-shrink: 0;
+    }
+
+    .journey-stage {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+      pointer-events: none;
+    }
+    .journey-stage.active { opacity: 1; pointer-events: auto; }
+
+    .stage-emoji {
+      font-size: 120px;
+      line-height: 1;
+      filter: drop-shadow(0 0 40px rgba(26,107,255,0.5));
+      transition: transform 0.6s ease;
+    }
+    .journey-stage.active .stage-emoji { transform: scale(1.05); }
+
+    .stage-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 3px;
+      color: var(--blue-mid);
+      text-transform: uppercase;
+      margin-top: 16px;
+    }
+
+    .stage-number {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+    }
+
+    .stage-title {
+      font-family: var(--font-display);
+      font-size: 52px;
+      letter-spacing: 2px;
+      line-height: 1;
+      color: var(--white);
+      margin-bottom: 16px;
+    }
+
+    .stage-desc {
+      font-size: 16px;
+      color: var(--muted);
+      line-height: 1.7;
+      font-weight: 300;
+    }
+
+    .text-stage {
+      position: absolute;
+      opacity: 0;
+      transition: opacity 0.6s ease, transform 0.6s ease;
+      transform: translateY(20px);
+    }
+    .text-stage.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .progress-bar {
+      position: absolute;
+      right: 40px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .progress-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--border);
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+    .progress-dot.active {
+      background: var(--blue);
+      box-shadow: 0 0 8px var(--blue);
+      transform: scale(1.4);
+    }
+
+    /* ── FEATURES GRID ── */
+    .features {
+      padding: 120px 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 4px;
+      color: var(--blue-mid);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      max-width: 60px;
+      height: 1px;
+      background: linear-gradient(to right, var(--blue), transparent);
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(40px, 6vw, 72px);
+      letter-spacing: 2px;
+      line-height: 1;
+      color: var(--white);
+      margin-bottom: 64px;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .feature-card {
+      background: var(--bg);
+      padding: 36px 32px;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.3s;
+    }
+    .feature-card:hover { background: var(--card); }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(26,107,255,0.4), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .feature-card:hover::before { opacity: 1; }
+
+    .feature-icon {
+      font-size: 28px;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .feature-title {
+      font-family: var(--font-display);
+      font-size: 22px;
+      letter-spacing: 1px;
+      color: var(--white);
+      margin-bottom: 10px;
+    }
+
+    .feature-desc {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.65;
+      font-weight: 300;
+    }
+
+    /* ── VOLT AI SECTION ── */
+    .voltai-section {
+      padding: 120px 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .voltai-chat {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 40px 80px rgba(0,0,0,0.6), 0 0 60px rgba(26,107,255,0.08);
+    }
+
+    .chat-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--card);
+    }
+
+    .chat-avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: rgba(26,107,255,0.15);
+      border: 1.5px solid var(--blue);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+      box-shadow: 0 0 12px rgba(26,107,255,0.4);
+    }
+
+    .chat-name { font-weight: 600; font-size: 14px; }
+    .chat-sub { font-size: 11px; color: var(--blue-mid); font-family: var(--font-mono); }
+
+    .chat-online {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #22c55e;
+      margin-left: auto;
+      box-shadow: 0 0 6px #22c55e;
+    }
+
+    .chat-messages {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      min-height: 280px;
+    }
+
+    .chat-msg {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+    }
+
+    .chat-msg.user { flex-direction: row-reverse; }
+
+    .chat-bubble {
+      max-width: 75%;
+      padding: 12px 16px;
+      border-radius: 16px;
+      font-size: 13.5px;
+      line-height: 1.55;
+    }
+
+    .chat-msg.volt .chat-bubble {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-bottom-left-radius: 4px;
+      color: var(--white);
+    }
+
+    .chat-msg.user .chat-bubble {
+      background: var(--blue);
+      border-bottom-right-radius: 4px;
+      color: #fff;
+    }
+
+    .chat-input-bar {
+      padding: 12px 16px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .chat-input {
+      flex: 1;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 10px 16px;
+      color: var(--muted);
+      font-size: 13px;
+      font-family: var(--font-body);
+    }
+
+    .chat-send {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--blue);
+      border: none;
+      color: #fff;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .typing-indicator {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      padding: 12px 16px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      border-bottom-left-radius: 4px;
+      width: fit-content;
+    }
+
+    .typing-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--blue-mid);
+      animation: typingPulse 1.2s infinite;
+    }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typingPulse {
+      0%, 60%, 100% { opacity: 0.3; transform: scale(1); }
+      30% { opacity: 1; transform: scale(1.2); }
+    }
+
+    /* ── STATS ── */
+    .stats {
+      padding: 80px 40px;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .stat-item {
+      text-align: center;
+      padding: 40px 24px;
+    }
+
+    .stat-number {
+      font-family: var(--font-display);
+      font-size: 64px;
+      letter-spacing: 2px;
+      color: var(--white);
+      line-height: 1;
+      background: linear-gradient(135deg, var(--white), var(--blue-mid));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 8px;
+      font-weight: 400;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── SOCIAL ── */
+    .social-section {
+      padding: 120px 40px;
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .social-links {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      margin-top: 40px;
+    }
+
+    .social-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 28px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--white);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.25s;
+      background: var(--bg);
+    }
+    .social-link:hover {
+      border-color: var(--blue);
+      background: rgba(26,107,255,0.05);
+      transform: translateY(-2px);
+    }
+
+    .social-icon { font-size: 18px; }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 40px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .footer-logo {
+      font-family: var(--font-display);
+      font-size: 20px;
+      letter-spacing: 5px;
+      color: var(--muted);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+    }
+
+    .footer-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 13px;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--white); }
+
+    .footer-copy {
+      font-size: 12px;
+      color: var(--muted);
+      font-family: var(--font-mono);
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── ELECTRIC LINE ── */
+    .electric-line {
+      width: 1px;
+      height: 80px;
+      background: linear-gradient(to bottom, transparent, var(--blue), transparent);
+      margin: 0 auto;
+      box-shadow: 0 0 8px var(--blue);
+      animation: electricPulse 2s infinite;
+    }
+
+    @keyframes electricPulse {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      nav { padding: 16px 20px; }
+      .nav-links { display: none; }
+      .features-grid { grid-template-columns: 1fr; }
+      .voltai-section { grid-template-columns: 1fr; gap: 40px; }
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .progress-bar { display: none; }
+      .journey-content { flex-direction: column; gap: 30px; padding: 0 24px; }
+      .journey-visual { width: 220px; height: 220px; }
+      .stage-emoji { font-size: 80px; }
+      .social-links { flex-direction: column; align-items: center; }
+      footer { flex-direction: column; gap: 20px; text-align: center; }
+      .footer-links { flex-wrap: wrap; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="bolt">⚡</div>
+    VOLTRESSO
+  </a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#volt-ai">Volt AI</a></li>
+    <li><a href="#journey">Story</a></li>
+    <li><a href="#social">Community</a></li>
+    <li><a href="#social" class="nav-cta">Download</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-glow"></div>
+  <p class="hero-eyebrow">⚡ The AI Espresso Guide</p>
+  <h1 class="hero-title">VOLT<span>RESSO</span></h1>
+  <p class="hero-tagline">Fuel Your Energy</p>
+  <p class="hero-sub">Machine-specific brew guides, real-time AI barista advice, and a complete coffee education — in one app.</p>
+  <div class="hero-actions">
+    <a href="#social" class="btn-primary">
+      🍎 App Store
+      <span class="coming-soon-badge">Soon</span>
+    </a>
+    <a href="#social" class="btn-primary" style="background: rgba(26,107,255,0.15); box-shadow: none; border: 1px solid var(--border);">
+      🤖 Google Play
+      <span class="coming-soon-badge">Soon</span>
+    </a>
+    <a href="https://www.facebook.com/share/18qZ3Du11y/?mibextid=wwXIfr" target="_blank" class="btn-secondary">
+      Follow Updates
+    </a>
+  </div>
+  <div style="margin-top: 80px;">
+    <div class="electric-line"></div>
+    <p style="font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 3px; margin-top: 12px; text-transform: uppercase;">Scroll to explore</p>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats reveal">
+  <div class="stat-item">
+    <div class="stat-number">86+</div>
+    <div class="stat-label">Espresso Machines</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number">40+</div>
+    <div class="stat-label">Bean Origins</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number">56+</div>
+    <div class="stat-label">Drink Recipes</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number">24/7</div>
+    <div class="stat-label">Volt AI Barista</div>
+  </div>
+</div>
+
+<!-- SCROLL JOURNEY -->
+<section id="journey" class="journey">
+  <div class="journey-scroll-container">
+    <div class="journey-sticky">
+      <div class="journey-content">
+
+        <!-- Visual -->
+        <div class="journey-visual">
+          <div class="journey-stage active" data-stage="0">
+            <div class="stage-emoji">🌿</div>
+            <div class="stage-label">Origin</div>
+          </div>
+          <div class="journey-stage" data-stage="1">
+            <div class="stage-emoji">🍒</div>
+            <div class="stage-label">Harvest</div>
+          </div>
+          <div class="journey-stage" data-stage="2">
+            <div class="stage-emoji">🫘</div>
+            <div class="stage-label">Fermentation</div>
+          </div>
+          <div class="journey-stage" data-stage="3">
+            <div class="stage-emoji">⚡</div>
+            <div class="stage-label">The Volt Moment</div>
+          </div>
+          <div class="journey-stage" data-stage="4">
+            <div class="stage-emoji">🟤</div>
+            <div class="stage-label">Roast</div>
+          </div>
+          <div class="journey-stage" data-stage="5">
+            <div class="stage-emoji">⚙️</div>
+            <div class="stage-label">Grind</div>
+          </div>
+          <div class="journey-stage" data-stage="6">
+            <div class="stage-emoji">☕</div>
+            <div class="stage-label">The Perfect Shot</div>
+          </div>
+        </div>
+
+        <!-- Text -->
+        <div class="journey-text">
+          <div class="text-stage active" data-stage="0">
+            <div class="stage-number">01 / 07</div>
+            <div class="stage-title">BORN IN THE HIGHLANDS</div>
+            <div class="stage-desc">Every extraordinary espresso begins in volcanic soil, high altitude, and equatorial sun. Voltresso connects you to the origin of every bean in our library — 40+ countries, hundreds of varieties.</div>
+          </div>
+          <div class="text-stage" data-stage="1">
+            <div class="stage-number">02 / 07</div>
+            <div class="stage-title">PICKED AT PEAK</div>
+            <div class="stage-desc">Only perfectly ripe cherries produce exceptional coffee. Voltresso teaches you how harvest method — hand-picked vs strip vs selective — shapes the final cup in ways most baristas never consider.</div>
+          </div>
+          <div class="text-stage" data-stage="2">
+            <div class="stage-number">03 / 07</div>
+            <div class="stage-title">PROCESSED WITH INTENTION</div>
+            <div class="stage-desc">Washed, natural, honey, anaerobic — each process unlocks a different flavor dimension. Our bean explorer breaks down exactly what each method does and which machines bring it out best.</div>
+          </div>
+          <div class="text-stage" data-stage="3">
+            <div class="stage-number">04 / 07</div>
+            <div class="stage-title">THE VOLT MOMENT</div>
+            <div class="stage-desc">This is where Voltresso begins. The moment raw coffee becomes extraordinary. Our AI, Volt, is powered by the world's most advanced language model — ready to guide every step that follows.</div>
+          </div>
+          <div class="text-stage" data-stage="4">
+            <div class="stage-number">05 / 07</div>
+            <div class="stage-title">ROASTED TO PROFILE</div>
+            <div class="stage-desc">Light, medium, dark — each roast demands different brew parameters. Voltresso adjusts your entire brew guide, temperature, and timing automatically based on the roast of your chosen bean.</div>
+          </div>
+          <div class="text-stage" data-stage="5">
+            <div class="stage-number">06 / 07</div>
+            <div class="stage-title">DIALED IN PERFECTLY</div>
+            <div class="stage-desc">Grind size is the single most powerful variable in espresso. Voltresso's grind calibration assistant walks you through finding your exact setting for every new bag of beans.</div>
+          </div>
+          <div class="text-stage" data-stage="6">
+            <div class="stage-number">07 / 07</div>
+            <div class="stage-title">YOUR PERFECT SHOT</div>
+            <div class="stage-desc">Log it, rate it, refine it. Voltresso tracks every shot you pull — dose, yield, time, temperature — and over time, your brew history tells the story of you becoming a better barista.</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Progress dots -->
+      <div class="progress-bar">
+        <div class="progress-dot active" data-dot="0"></div>
+        <div class="progress-dot" data-dot="1"></div>
+        <div class="progress-dot" data-dot="2"></div>
+        <div class="progress-dot" data-dot="3"></div>
+        <div class="progress-dot" data-dot="4"></div>
+        <div class="progress-dot" data-dot="5"></div>
+        <div class="progress-dot" data-dot="6"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features" class="features">
+  <div class="section-label">Features</div>
+  <h2 class="section-title reveal">EVERYTHING A<br/>BARISTA NEEDS</h2>
+
+  <div class="features-grid reveal">
+    <div class="feature-card">
+      <span class="feature-icon">☕</span>
+      <div class="feature-title">Machine-Aware Guides</div>
+      <div class="feature-desc">Step-by-step brew guides calibrated to your exact machine. 86+ machines across every category — from home lever to commercial.</div>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">⚡</span>
+      <div class="feature-title">Volt AI Barista</div>
+      <div class="feature-desc">24/7 expert barista advice powered by Claude AI. Ask anything — grind calibration, milk texturing, shot diagnosis, bean recommendations.</div>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🫘</span>
+      <div class="feature-title">Bean Explorer</div>
+      <div class="feature-desc">40+ coffee origins with flavor profiles, processing methods, altitude data, and machine-specific brewing recommendations.</div>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">📊</span>
+      <div class="feature-title">Shot Logger</div>
+      <div class="feature-desc">Log dose, yield, time, temperature, and notes for every shot. Track your progress over time and spot patterns in your brewing.</div>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🔬</span>
+      <div class="feature-title">Shot Diagnosis</div>
+      <div class="feature-desc">Something went wrong? Select your symptom — sour, bitter, channeling, no crema — and get exact corrections for your machine.</div>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">📖</span>
+      <div class="feature-title">Recipe Library</div>
+      <div class="feature-desc">56+ drink recipes from classic espresso to milk-forward specialties. Save favourites, create your own, filter by category.</div>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">⏱️</span>
+      <div class="feature-title">Smart Brew Timer</div>
+      <div class="feature-desc">Timer that knows your machine. Espresso targets 25–30s, Turkish 3–4 min, Pour Over 2:30–3:30. Automatically adapts.</div>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🌍</span>
+      <div class="feature-title">All Brew Methods</div>
+      <div class="feature-desc">Espresso, Moka Pot, French Press, AeroPress, Pour Over, Turkish, Drip, Vacuum Pot — dedicated guides for every method.</div>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">👤</span>
+      <div class="feature-title">Barista Profile</div>
+      <div class="feature-desc">Your personal barista account. Track your level from Beginner to Advanced, your machine, your brew history, and your saved content.</div>
+    </div>
+  </div>
+</section>
+
+<!-- VOLT AI SECTION -->
+<section id="volt-ai" style="background: linear-gradient(to bottom, var(--black), rgba(26,107,255,0.03), var(--black));">
+  <div class="voltai-section">
+    <div class="reveal">
+      <div class="section-label">Volt AI</div>
+      <h2 class="section-title">YOUR AI<br/>BARISTA.<br/>ALWAYS ON.</h2>
+      <p style="color: var(--muted); font-size: 16px; line-height: 1.7; font-weight: 300; margin-bottom: 32px;">Volt is powered by Claude — one of the world's most advanced AI models. It knows your machine, remembers your preferences, and gives expert barista advice in real time. Like having a world-class barista in your pocket, 24/7.</p>
+      <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+        <span style="padding: 8px 14px; border-radius: 20px; background: rgba(26,107,255,0.1); border: 1px solid var(--border); font-size: 13px; color: var(--blue-mid);">Shot diagnosis</span>
+        <span style="padding: 8px 14px; border-radius: 20px; background: rgba(26,107,255,0.1); border: 1px solid var(--border); font-size: 13px; color: var(--blue-mid);">Grind calibration</span>
+        <span style="padding: 8px 14px; border-radius: 20px; background: rgba(26,107,255,0.1); border: 1px solid var(--border); font-size: 13px; color: var(--blue-mid);">Bean recommendations</span>
+        <span style="padding: 8px 14px; border-radius: 20px; background: rgba(26,107,255,0.1); border: 1px solid var(--border); font-size: 13px; color: var(--blue-mid);">Milk texturing</span>
+        <span style="padding: 8px 14px; border-radius: 20px; background: rgba(26,107,255,0.1); border: 1px solid var(--border); font-size: 13px; color: var(--blue-mid);">Machine setup</span>
+        <span style="padding: 8px 14px; border-radius: 20px; background: rgba(26,107,255,0.1); border: 1px solid var(--border); font-size: 13px; color: var(--blue-mid);">Water profiles</span>
+      </div>
+    </div>
+
+    <div class="voltai-chat reveal">
+      <div class="chat-header">
+        <div class="chat-avatar">⚡</div>
+        <div>
+          <div class="chat-name">Volt</div>
+          <div class="chat-sub">AI Barista · Claude</div>
+        </div>
+        <div class="chat-online"></div>
+      </div>
+      <div class="chat-messages">
+        <div class="chat-msg user">
+          <div class="chat-bubble">My espresso is coming out sour and thin. I'm using a Gaggia Classic Pro.</div>
+        </div>
+        <div class="chat-msg volt">
+          <div class="chat-avatar" style="width:28px;height:28px;font-size:13px;flex-shrink:0;">⚡</div>
+          <div class="chat-bubble">Classic under-extraction. On your Gaggia Classic Pro, I'd start with your grind — go 2–3 notches finer on your burr grinder. Your brew ratio looks low too. Target 1:2 — so if you're dosing 18g, stop at 36ml yield in 27–30 seconds. Also check your brew temp — the Classic benefits from temperature surfing. Let me know your current dose and I'll dial it in exactly.</div>
+        </div>
+        <div class="chat-msg user">
+          <div class="chat-bubble">Best bean for a cortado?</div>
+        </div>
+        <div class="chat-msg volt">
+          <div class="chat-avatar" style="width:28px;height:28px;font-size:13px;flex-shrink:0;">⚡</div>
+          <div class="typing-indicator">
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+          </div>
+        </div>
+      </div>
+      <div class="chat-input-bar">
+        <input class="chat-input" type="text" placeholder="Ask Volt anything..." readonly />
+        <button class="chat-send">➤</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOCIAL -->
+<section id="social" class="social-section reveal">
+  <div class="section-label" style="justify-content: center;">Community</div>
+  <h2 class="section-title">JOIN THE<br/>VOLTRESSO<br/>COMMUNITY</h2>
+  <p style="color: var(--muted); font-size: 16px; line-height: 1.7; font-weight: 300;">Follow us for brew tips, app updates, and coffee culture content. Be first to know when we launch.</p>
+  <div class="social-links">
+    <a href="https://www.facebook.com/share/18qZ3Du11y/?mibextid=wwXIfr" target="_blank" class="social-link">
+      <span class="social-icon">📘</span>
+      Facebook
+    </a>
+    <a href="https://www.instagram.com/voltresso?igsh=MXNuaWdqOHdodTJqaQ%3D%3D&utm_source=qr" target="_blank" class="social-link">
+      <span class="social-icon">📸</span>
+      @Voltresso
+    </a>
+    <a href="mailto:voltresso@zohomail.eu" class="social-link">
+      <span class="social-icon">✉️</span>
+      voltresso@zohomail.eu
+    </a>
+  </div>
+
+  <div style="margin-top: 80px; padding: 40px; background: var(--bg); border: 1px solid var(--border); border-radius: 20px; text-align: center;">
+    <p style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 3px; color: var(--blue-mid); text-transform: uppercase; margin-bottom: 16px;">App Launching Soon</p>
+    <h3 style="font-family: var(--font-display); font-size: 36px; letter-spacing: 2px; margin-bottom: 12px;">BE THE FIRST TO KNOW</h3>
+    <p style="color: var(--muted); font-size: 14px; margin-bottom: 24px;">Follow our social pages for the launch announcement.</p>
+    <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+      <a href="https://www.facebook.com/share/18qZ3Du11y/?mibextid=wwXIfr" target="_blank" class="btn-primary">Follow on Facebook</a>
+      <a href="https://www.instagram.com/voltresso" target="_blank" class="btn-secondary">Follow on Instagram</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">VOLTRESSO</div>
+  <ul class="footer-links">
+    <li><a href="https://tarekn98.github.io/voltresso-privacy">Privacy Policy</a></li>
+    <li><a href="https://tarekn98.github.io/voltresso-privacy/terms.html">Terms of Service</a></li>
+    <li><a href="mailto:voltresso@zohomail.eu">Contact</a></li>
+  </ul>
+  <div class="footer-copy">© 2025 Voltresso</div>
+</footer>
+
+<script>
+  // ── SCROLL REVEAL ──────────────────────────────────────────────────────
+  const reveals = document.querySelectorAll('.reveal');
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => revealObserver.observe(el));
+
+  // ── SCROLL JOURNEY ─────────────────────────────────────────────────────
+  const stages = document.querySelectorAll('.journey-stage');
+  const textStages = document.querySelectorAll('.text-stage');
+  const dots = document.querySelectorAll('.progress-dot');
+  const scrollContainer = document.querySelector('.journey-scroll-container');
+  const TOTAL_STAGES = 7;
+
+  function setStage(idx) {
+    stages.forEach((s, i) => s.classList.toggle('active', i === idx));
+    textStages.forEach((s, i) => s.classList.toggle('active', i === idx));
+    dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+  }
+
+  dots.forEach(dot => {
+    dot.addEventListener('click', () => {
+      const i = parseInt(dot.dataset.dot);
+      const top = scrollContainer.getBoundingClientRect().top + window.scrollY;
+      const segH = scrollContainer.offsetHeight / TOTAL_STAGES;
+      window.scrollTo({ top: top + segH * i + 10, behavior: 'smooth' });
+    });
+  });
+
+  window.addEventListener('scroll', () => {
+    if (!scrollContainer) return;
+    const rect = scrollContainer.getBoundingClientRect();
+    const total = scrollContainer.offsetHeight - window.innerHeight;
+    const scrolled = -rect.top;
+    const progress = Math.max(0, Math.min(1, scrolled / total));
+    const stageIdx = Math.min(TOTAL_STAGES - 1, Math.floor(progress * TOTAL_STAGES));
+    setStage(stageIdx);
+  }, { passive: true });
+
+  // ── TYPING ANIMATION for Volt chat ────────────────────────────────────
+  setTimeout(() => {
+    const typingRow = document.querySelector('.chat-msg.volt:last-child');
+    if (typingRow) {
+      const bubble = typingRow.querySelector('.typing-indicator');
+      if (bubble) {
+        setTimeout(() => {
+          bubble.outerHTML = '<div class="chat-bubble">For a cortado, you want something bright and sweet that can punch through the milk. Ethiopian Yirgacheffe — washed process — is perfect. The florals and citrus stay distinct at 1:4 milk ratio. Avoid heavy dark roasts; they turn muddy. Want me to find it in the Bean Explorer?</div>';
+        }, 2800);
+      }
+    }
+  }, 4000);
+</script>
+
+</body>
+</html>
